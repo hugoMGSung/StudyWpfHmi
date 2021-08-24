@@ -44,7 +44,10 @@ namespace WpfScadaApp
 
         private void Client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
         {
-
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+            {
+                LblStatus.Text = "비상모터 처리";
+            }));
         }
 
         private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -70,7 +73,11 @@ namespace WpfScadaApp
 
         private void MySimpleButton_CustomClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("TEST!!");
+            if (client.IsConnected)
+            {
+                string allData = "{ \"motor\" : \"120\" }";
+                client.Publish("machine01/4002/", Encoding.UTF8.GetBytes(allData), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            }
         }
 
         private void BtnMonitoring_Click(object sender, RoutedEventArgs e)
