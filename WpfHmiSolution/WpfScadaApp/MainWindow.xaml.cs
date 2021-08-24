@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Windows;
@@ -55,12 +57,17 @@ namespace WpfScadaApp
             Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             {
                 var message = Encoding.UTF8.GetString(e.Message);
-                LblStatus.Text = message;
-                if (message.Contains("push"))
+                var currentDatas = JsonConvert.DeserializeObject<Dictionary<string, string>>(message);
+
+                var color = currentDatas["color"];
+                var state = currentDatas["state"];
+                LblStatus.Text = currentDatas["color"] + "/" + currentDatas["state"];   
+                
+                if (color == "green" && state == "1")
                 {
                     LedAlarm.CurrState = Color.FromRgb(0, 255, 0);
                 }
-                else if (message.Contains("warn"))
+                else if (color == "red" && state == "1")
                 {
                     LedAlarm.CurrState = Color.FromRgb(255, 0, 0);
                 }
