@@ -108,12 +108,32 @@ namespace NewScadaApp
         {
             using (var conn = new SqlConnection(connectionString))
             {
-                string insertQuery = "";
+                string insertQuery = $@"INSERT INTO Kasan01_Device
+                                               (dev_addr
+                                               ,currtime
+                                               ,code
+                                               ,value)
+                                         VALUES
+                                               ('{currData["dev_addr"]}'
+                                               ,'{currData["currtime"]}'
+                                               ,'{currData["code"]}'
+                                               ,'{currData["value"]}')";
 
                 try
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(insertQuery, conn);
+                    #region SqlParameter 사용방식
+                    /*SqlParameter paramDev_addr = new SqlParameter("@dev_addr", currData["dev_addr"]);
+                    SqlParameter paramCurrtime = new SqlParameter("@currtime", currData["currtime"]);
+                    SqlParameter paramCode = new SqlParameter("@code", currData["code"]);
+                    SqlParameter paramValue = new SqlParameter("@value", currData["value"]);
+                    cmd.Parameters.Add(paramDev_addr);
+                    cmd.Parameters.Add(paramCurrtime);
+                    cmd.Parameters.Add(paramCode);
+                    cmd.Parameters.Add(paramValue);*/
+                    #endregion
+
                     if (cmd.ExecuteNonQuery() == 1)
                     {
                         App.LOGGER.Info("IoT 데이터 입력 성공!");
